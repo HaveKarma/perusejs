@@ -1,0 +1,25 @@
+{
+  "name": "perusejs",
+  "version": "0.0.0",
+  "description": "karma scraper",
+  "main": "app.js",
+  "scripts": {
+    "test": "npm test"
+  },
+  "private": true,
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/HaveKarma/perusejs.git"
+  },
+  "author": "justin@havekarma.com",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/HaveKarma/perusejs/issues"
+  },
+  "homepage": "https://github.com/HaveKarma/perusejs",
+  "devDependencies": {
+    "grunt": "~0.4.2",
+    "load-grunt-tasks": "~0.2.1",
+    "grunt-contrib-jshint": "~0.8.0"
+  }
+}
