@@ -15,13 +15,24 @@ module.exports = function (grunt) {
             options:
             {
                 'jshintrc': true,
-                'ignores': 'newrelic.js'
+                'ignores': 'test/*'
             }
         
         },
 
+        mochaTest: {
+            peruse: {
+                options: {
+                    reporter: 'spec'
+                },
+                src: [
+                    'test/**/*.js'
+                ]
+            }
+        }
+
     });
 
-    grunt.registerTask('default', ['jshint']);
+    grunt.registerTask('default', ['jshint', 'mochaTest']);
     
 };

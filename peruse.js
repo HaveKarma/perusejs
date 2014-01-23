@@ -8,6 +8,39 @@ var request = require('request');
 var cheerio = require('cheerio');
 var _ = require('underscore');
 
+// Create the initial Peruse Object
+var Peruse = function() {
+    this._selectors = [];
+    this._scrapers = [];
+    this._collectedData = [];
+    return this;
+};
+
+
+// use request and cheerio to get the HTML data
+Peruse.prototype.getHTML = function() {
+
+};
+
+// this function does the scraping, saving the data locally.
+Peruse.prototype.scrape = function() {
+
+};
+
+// helper function to callback to external code
+Peruse.prototype.callback = function() {
+
+};
+
+// createURL - should be overridden in base classes
+Peruse.prototype.createURL = function() {
+    return '';
+};
+
+module.exports = Peruse;
+
+/*
+
 // all arguments are optional, yet probably important
 module.exports =  {
     // selector is the default selector(s) we use to scrape.
@@ -67,3 +100,5 @@ module.exports =  {
         this.getHTML(null);
     }
 };
+
+*/
