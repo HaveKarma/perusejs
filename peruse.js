@@ -9,44 +9,61 @@ var cheerio = require('cheerio');
 var _ = require('underscore');
 
 // Create the initial Peruse Object
-var Peruse = function(options) {
-    options = options || {};
-    this._selectors = options.selector || [];
-    this._baseUrl = options.baseUrl || '';
-    this._identifier = options.identifier || '';
-    // this._scrapers = [];
+var Peruse = function(jobs, options) {
+    _.bindAll(this, 'jobComplete');
+    this.jobs = jobs || [];
+    this.options = options || {};
+    this.jobCount = this.jobs.length;
+
     this._collectedData = [];
     return this;
 };
 
+Peruse.prototype._verifyJob = function(job) {
+    return true;
+};
 
 // use request and cheerio to get the HTML data
 Peruse.prototype.process = function(cb) {
+    // console.log('job :' + JSON.stringify(this.jobs));
+    this.done = cb;
     var self = this;
-    this._callback = cb;
-    var url = this._createURL(this.identifier);
-    if (url.trim() === '') {
-        console.log('exit early');
-        return;
-    }
-    request(url, function(err, resp, html)
-    {
-        if (err)
-        {
-            console.error('ERROR Parsing Page: ' + err);
+    _.each(this.jobs, function(job){
+        if (!self._verifyJob(job)) {
+            console.error('job not formatted properly');
+            return;
         }
-        else
-        {
-            var $ = cheerio.load(html);
-            self.scrape($, self._selectors, self._callback);
+        var url = self._createURL(job.baseUrl, job.identifier);
+        if (url.trim() === '') {
+            console.log('exited early');
+            return;
         }
+        request(url, function(err, resp, html)
+        {
+            if (err)
+            {
+                console.error('ERROR Parsing Page: ' + err);
+            }
+            else
+            {
+                var $ = cheerio.load(html);
+                self.scrape($, job.selector, self.jobComplete);
+            }
+        });
     });
+};
+
+Peruse.prototype.jobComplete = function() {
+    this.jobCount--;
+    if (this.jobCount <= 0) {
+        this.done(this._collectedData);
+    }
 };
 
 // this function does the scraping, saving the data locally.
 Peruse.prototype.scrape = function($, selector, cb) {
     var self = this;
-    _.each($(this._selectors), function(m, iterator, list){
+    _.each($(selector), function(m, iterator, list){
         var data = $(m).html();
         self._collectedData.push(data);
         if (iterator === list.length-1)
@@ -57,9 +74,11 @@ Peruse.prototype.scrape = function($, selector, cb) {
     });
 };
 
-// createURL - should be overridden in base classes
-Peruse.prototype._createURL = function() {
-    return this._baseUrl + this._identifier;
+// createURL - should be overridden in child classes
+Peruse.prototype._createURL = function(base, identifier) {
+    var url = (base || '') + (identifier || '');
+    console.log(url);
+    return url;
 };
 
 module.exports = Peruse;

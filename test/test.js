@@ -7,11 +7,6 @@ var scraper = undefined;
 
 describe('PeruseJS - sans arguments', function() {
     before(function() {
-        // var siteData = {
-        //     'selector': 'p.message',
-        //     'baseUrl': 'https://www.airbnb.com/users/show/',
-        //     'identifier': '492445'
-        // };
         scraper = new peruse();
     });
 
@@ -42,11 +37,15 @@ describe('PeruseJS - sans arguments', function() {
 
 describe('PeruseJS - with data', function() {
     before(function() {
-        var siteData = {
+        var siteData = [{
             'selector': 'p.message',
             'baseUrl': 'https://www.airbnb.com/users/show/',
             'identifier': '492445'
-        };
+        },{
+            'selector': 'p.message',
+            'baseUrl': 'https://www.airbnb.com/users/show/',
+            'identifier': '2308032'
+        }];
         scraper = new peruse(siteData);
     });
 
@@ -62,9 +61,10 @@ describe('PeruseJS - with data', function() {
         });
 
         describe('#process()', function(){
-            this.timeout(3000);
+            this.timeout(15000);
             it('should run without error in < 3000ms', function(done){
-                scraper.process(function() {
+                scraper.process(function(x) {
+                    console.log(JSON.stringify(x));
                     done();
                 });
             });
