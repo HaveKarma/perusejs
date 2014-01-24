@@ -5,27 +5,70 @@ var should = require('should');
 var peruse = require('../peruse.js');
 var scraper = undefined;
 
-describe('PeruseJS', function() {
+describe('PeruseJS - sans arguments', function() {
     before(function() {
+        // var siteData = {
+        //     'selector': 'p.message',
+        //     'baseUrl': 'https://www.airbnb.com/users/show/',
+        //     'identifier': '492445'
+        // };
         scraper = new peruse();
     });
 
     describe('Creating a Peruse Object', function() {
         it('should be ok', function(){
             should(scraper).be.ok;
-            should(scraper).have.property('createURL');
-            should(scraper).have.property('getHTML');
+            should(scraper).have.property('_createURL');
+            should(scraper).have.property('process');
             should(scraper).have.property('scrape');
-            should(scraper).have.property('callback');
-            // assert.equal(-1, [1,2,3].indexOf(5));
-            // assert.equal(-1, [1,2,3].indexOf(0));
         });
 
-        it ('should return string', function() {
-            describe('Do something', function() {
-                scraper.createURL().should.be.type('string');
+        it ('_createURL()', function() {
+            describe('- should return string', function() {
+                scraper._createURL().should.be.type('string');
             });
         });
+
+        it('#process()', function(){
+            it('should run without error', function(done){
+                scraper.process(function() {
+                    done();
+                });
+            });
+        })
+
+    });
+});
+
+describe('PeruseJS - with data', function() {
+    before(function() {
+        var siteData = {
+            'selector': 'p.message',
+            'baseUrl': 'https://www.airbnb.com/users/show/',
+            'identifier': '492445'
+        };
+        scraper = new peruse(siteData);
+    });
+
+    describe('Creating a Peruse Object', function() {
+        it('should be ok', function(){
+            should(scraper).be.ok;
+        });
+
+        it ('_createURL() - should return string', function() {
+            describe('Do something', function() {
+                scraper._createURL().should.be.type('string');
+            });
+        });
+
+        describe('#process()', function(){
+            this.timeout(5000);
+            it('should run without error', function(done){
+                scraper.process(function() {
+                    done();
+                });
+            });
+        })
     });
 
     

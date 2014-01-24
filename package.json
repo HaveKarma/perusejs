@@ -4,7 +4,7 @@
   "description": "karma scraper",
   "main": "app.js",
   "scripts": {
-    "test": "npm test"
+    "test": "grunt test"
   },
   "private": true,
   "repository": {
