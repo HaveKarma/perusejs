@@ -62,8 +62,8 @@ describe('PeruseJS - with data', function() {
         });
 
         describe('#process()', function(){
-            this.timeout(5000);
-            it('should run without error', function(done){
+            this.timeout(3000);
+            it('should run without error in < 3000ms', function(done){
                 scraper.process(function() {
                     done();
                 });
