@@ -2,7 +2,7 @@
   "name": "perusejs",
   "version": "0.0.0",
   "description": "karma scraper",
-  "main": "app.js",
+  "main": "index.js",
   "scripts": {
     "test": "grunt test"
   },
