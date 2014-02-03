@@ -71,7 +71,8 @@ Peruse.prototype.jobComplete = function() {
 Peruse.prototype.scrape = function($, selector, cb) {
     var self = this;
     _.each($(selector), function(m, iterator, list){
-        var data = $(m).html();
+        var data = {};
+        data.text = $(m).html();
         self._collectedData.push(data);
         if (iterator === list.length-1)
         {
