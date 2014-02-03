@@ -11,6 +11,7 @@ var _ = require('underscore');
 // Create the initial Peruse Object
 var Peruse = function(jobs, options) {
     _.bindAll(this, 'jobComplete');
+    // make sure the object passed is in array
     if (jobs !== undefined && jobs.length === undefined) {
         jobs = [jobs];
     }
