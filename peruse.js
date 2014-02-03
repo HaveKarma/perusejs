@@ -51,6 +51,9 @@ Peruse.prototype.process = function(cb) {
             else
             {
                 var $ = cheerio.load(html);
+                if (job.scrape !== undefined) {
+                    self.scrape = job.scrape;
+                }
                 self.scrape($, job.selector, self.jobComplete);
             }
         });
