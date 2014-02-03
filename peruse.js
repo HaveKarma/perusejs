@@ -37,7 +37,7 @@ Peruse.prototype.process = function(cb) {
             console.error('job not formatted properly');
             return;
         }
-        var url = self._createURL(job.baseUrl, job.identifier);
+        var url = self._createURL(job.baseUrl, job.identifier, job.postfix);
         if (url.trim() === '') {
             console.log('exited early');
             return;
@@ -79,8 +79,8 @@ Peruse.prototype.scrape = function($, selector, cb) {
 };
 
 // createURL - should be overridden in child classes
-Peruse.prototype._createURL = function(base, identifier) {
-    var url = (base || '') + (identifier || '');
+Peruse.prototype._createURL = function(base, identifier, postfix) {
+    var url = (base || '') + (identifier || '') + (postfix || '');
     // console.log(url);
     return url;
 };
