@@ -73,7 +73,7 @@ Peruse.prototype.scrape = function($, selector, cb) {
         if (iterator === list.length-1)
         {
             console.log('scraped ' + self._collectedData.length);
-            cb();
+            cb(self._collectedData);
         }
     });
 };
