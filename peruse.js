@@ -72,7 +72,7 @@ Peruse.prototype.scrape = function($, selector, cb) {
         self._collectedData.push(data);
         if (iterator === list.length-1)
         {
-            console.log('scraped ' + self._collectedData.length);
+            // console.log('scraped ' + self._collectedData.length);
             cb(self._collectedData);
         }
     });
@@ -81,7 +81,7 @@ Peruse.prototype.scrape = function($, selector, cb) {
 // createURL - should be overridden in child classes
 Peruse.prototype._createURL = function(base, identifier) {
     var url = (base || '') + (identifier || '');
-    console.log(url);
+    // console.log(url);
     return url;
 };
 
