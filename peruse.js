@@ -68,9 +68,19 @@ Peruse.prototype.jobComplete = function() {
     }
 };
 
+Peruse.prototype._getData = function(result, type, $) {
+    switch(type) {
+        case 'html':
+            return $(result).text().trim();
+        case 'meta':
+            return $(result).attr('content');
+    }
+};
+
 // this function does the scraping, saving the data locally.
 Peruse.prototype.scrape = function($, selectors, cb) {
     var self = this;
+    var type = 'html';
     var i = 0;
     console.log('looking for ' + JSON.stringify(selectors));
     // var scrapedData = {};
@@ -79,16 +89,23 @@ Peruse.prototype.scrape = function($, selectors, cb) {
         console.log('SCRAPER ---> ' + iterator);
         _.each(sel, function(value, key, list){
             console.log('value: ' + value + ' key: ' + key);
+            if (typeof value === 'object') {
+                console.log('setting type');
+                type = value.type;
+                value = value.selector;
+            }
             i = 0;
+            console.log('TYPE---> ' + type);
+            console.log('SELECTOR---> ' + value);
             _.each($(value), function(result){
                 if (self._collectedData[i] === undefined) {
                     var newData = {};
-                    newData[key] = $(result).text().trim();
+                    newData[key] = self._getData(result, type, $);
                     self._collectedData.push(newData);
                 }
                 else {
                     // we've already scraped a selector for this job...
-                    self._collectedData[i][key] =  $(result).text().trim();
+                    self._collectedData[i][key] =  self._getData(result, type, $);
                 }
 
                 i++;
