@@ -7,6 +7,7 @@
 var request = require('request');
 var cheerio = require('cheerio');
 var _ = require('underscore');
+var util = require('util');
 
 // Create the initial Peruse Object
 var Peruse = function(jobs, options) {
@@ -68,18 +69,38 @@ Peruse.prototype.jobComplete = function() {
 };
 
 // this function does the scraping, saving the data locally.
-Peruse.prototype.scrape = function($, selector, cb) {
+Peruse.prototype.scrape = function($, selectors, cb) {
     var self = this;
-    _.each($(selector), function(m, iterator, list){
-        var data = {};
-        data.text = $(m).html();
-        self._collectedData.push(data);
-        if (iterator === list.length-1)
-        {
-            // console.log('scraped ' + self._collectedData.length);
-            cb(self._collectedData);
-        }
+    var i = 0;
+    console.log('looking for ' + JSON.stringify(selectors));
+    // var scrapedData = {};
+    _.each(selectors, function(sel, iterator) {
+        // scrapedData = {};
+        console.log('SCRAPER ---> ' + iterator);
+        _.each(sel, function(value, key, list){
+            console.log('value: ' + value + ' key: ' + key);
+            i = 0;
+            _.each($(value), function(result){
+                if (self._collectedData[i] === undefined) {
+                    var newData = {};
+                    newData[key] = $(result).text().trim();
+                    self._collectedData.push(newData);
+                }
+                else {
+                    // we've already scraped a selector for this job...
+                    self._collectedData[i][key] =  $(result).text().trim();
+                }
+
+                i++;
+                // self._collectedData.push(scrapedData);
+                // scrapedData[key] = $(result).html().trim();
+            });
+            
+        });
+        
     });
+    cb(self._collectedData);
+    
 };
 
 // createURL - should be overridden in child classes
