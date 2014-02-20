@@ -7,7 +7,6 @@
 var request = require('request');
 var cheerio = require('cheerio');
 var _ = require('underscore');
-var util = require('util');
 
 // Create the initial Peruse Object
 var Peruse = function(jobs, options) {
@@ -63,7 +62,7 @@ Peruse.prototype.process = function(cb) {
 Peruse.prototype.jobComplete = function() {
     this.jobCount--;
     if (this.jobCount <= 0) {
-        this.done(this._collectedData);
+        this.done(this._collectedData, this.options);
     }
 };
 
@@ -106,7 +105,7 @@ Peruse.prototype.scrape = function($, selectors, cb) {
         });
         
     });
-    cb(self._collectedData);
+    cb(self._collectedData, self.options);
     
 };
 
