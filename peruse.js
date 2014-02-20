@@ -30,7 +30,6 @@ Peruse.prototype._verifyJob = function(job) {
 
 // use request and cheerio to get the HTML data
 Peruse.prototype.process = function(cb) {
-    // console.log('job :' + JSON.stringify(this.jobs));
     this.done = cb;
     var self = this;
     _.each(this.jobs, function(job){
@@ -40,7 +39,7 @@ Peruse.prototype.process = function(cb) {
         }
         var url = self._createURL(job.baseUrl, job.identifier, job.postfix);
         if (url.trim() === '') {
-            console.log('exited early');
+            console.error('exited early');
             return;
         }
         request(url, function(err, resp, html)
@@ -82,21 +81,14 @@ Peruse.prototype.scrape = function($, selectors, cb) {
     var self = this;
     var type = 'html';
     var i = 0;
-    console.log('looking for ' + JSON.stringify(selectors));
-    // var scrapedData = {};
+
     _.each(selectors, function(sel, iterator) {
-        // scrapedData = {};
-        console.log('SCRAPER ---> ' + iterator);
         _.each(sel, function(value, key, list){
-            console.log('value: ' + value + ' key: ' + key);
             if (typeof value === 'object') {
-                console.log('setting type');
                 type = value.type;
                 value = value.selector;
             }
             i = 0;
-            console.log('TYPE---> ' + type);
-            console.log('SELECTOR---> ' + value);
             _.each($(value), function(result){
                 if (self._collectedData[i] === undefined) {
                     var newData = {};
@@ -109,8 +101,6 @@ Peruse.prototype.scrape = function($, selectors, cb) {
                 }
 
                 i++;
-                // self._collectedData.push(scrapedData);
-                // scrapedData[key] = $(result).html().trim();
             });
             
         });
@@ -123,7 +113,6 @@ Peruse.prototype.scrape = function($, selectors, cb) {
 // createURL - should be overridden in child classes
 Peruse.prototype._createURL = function(base, identifier, postfix) {
     var url = (base || '') + (identifier || '') + (postfix || '');
-    // console.log(url);
     return url;
 };
 
