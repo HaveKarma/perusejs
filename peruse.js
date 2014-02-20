@@ -36,10 +36,13 @@ Peruse.prototype.process = function(cb) {
             console.error('job not formatted properly');
             return;
         }
-        var url = self._createURL(job.baseUrl, job.identifier, job.postfix);
+        var url = self._createURL(job.baseUrl, self.options.identifier, job.postfix);
         if (url.trim() === '') {
             console.error('exited early');
             return;
+        }
+        if (self.options.verbose) {
+            console.log('Peruse::process() url:' + url);
         }
         request(url, function(err, resp, html)
         {
@@ -60,34 +63,53 @@ Peruse.prototype.process = function(cb) {
 };
 
 Peruse.prototype.jobComplete = function() {
+    if (this.options.verbose) {
+        console.log('Peruse::jobComplete() ' + this.jobCount + ' ' + this._collectedData.length);
+    }
     this.jobCount--;
     if (this.jobCount <= 0) {
+       
         this.done(this._collectedData, this.options);
     }
 };
 
 Peruse.prototype._getData = function(result, type, $) {
+    var data = '';
     switch(type) {
         case 'html':
-            return $(result).text().trim();
+            data = $(result).text().trim();
+            break;
         case 'meta':
-            return $(result).attr('content');
+            data = $(result).attr('content');
+            break;
     }
+
+    if (this.options.verbose) {
+        console.log('Peruse::scrape() _getData() ' + data + ' ' + type);
+    }
+
+    return data;
 };
 
 // this function does the scraping, saving the data locally.
 Peruse.prototype.scrape = function($, selectors, cb) {
     var self = this;
-    var type = 'html';
+    var type = '';
     var i = 0;
-
+    if (this.options.verbose) {
+        console.log('Peruse::scrape() scraping ' + selectors.length + ' selectors.');
+    }
     _.each(selectors, function(sel, iterator) {
         _.each(sel, function(value, key, list){
+            type = 'html';
             if (typeof value === 'object') {
                 type = value.type;
                 value = value.selector;
             }
             i = 0;
+            if (self.options.verbose) {
+                console.log('Peruse::scrape() Scraping Selector: ' + value + ' length: ' + $(value).length);
+            }
             _.each($(value), function(result){
                 if (self._collectedData[i] === undefined) {
                     var newData = {};
@@ -111,6 +133,9 @@ Peruse.prototype.scrape = function($, selectors, cb) {
 
 // createURL - should be overridden in child classes
 Peruse.prototype._createURL = function(base, identifier, postfix) {
+    if (this.options.verbose) {
+        console.log('Peruse::_createURL() base: ' + base + ' identifier: ' + identifier + ' postfix: ' + postfix);
+    }
     var url = (base || '') + (identifier || '') + (postfix || '');
     return url;
 };
