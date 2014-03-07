@@ -23,7 +23,7 @@ var Peruse = function(jobs, options) {
     return this;
 };
 
-Peruse.prototype._verifyJob = function(job) {
+Peruse.prototype._verifyJob = function(/*job*/) {
     return true;
 };
 
@@ -65,11 +65,9 @@ Peruse.prototype.process = function(cb) {
             }
             if (err) {
                 throw({message: 'ERROR Parsing Page: ' + err});
-                self.jobComplete();
             }
             else if (resp.statusCode !== 200) {
                 throw({message: 'ERROR Status Code: ' + resp.statusCode});
-                self.jobComplete();
             }
             else {
                 var $ = cheerio.load(html);
@@ -119,8 +117,8 @@ Peruse.prototype.scrape = function($, selectors, cb) {
     if (this.options.verbose) {
         console.log('Peruse::scrape() scraping ' + selectors.length + ' selectors.');
     }
-    _.each(selectors, function(sel, iterator) {
-        _.each(sel, function(value, key, list){
+    _.each(selectors, function(sel) {
+        _.each(sel, function(value, key){
             type = 'html';
             if (typeof value === 'object') {
                 type = value.type;
