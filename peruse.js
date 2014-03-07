@@ -42,16 +42,23 @@ Peruse.prototype.process = function(cb) {
             return;
         }
         if (self.options.verbose) {
-            console.log('Peruse::process() url:' + url);
+            console.log('Peruse::process() url: |' + url+'|');
         }
-        request(url, function(err, resp, html)
+        request({
+            'url': url,
+            'User-Agent': 'request'
+        }, function(err, resp, html)
         {
-            if (err)
-            {
-                console.error('ERROR Parsing Page: ' + err);
+            if (self.options.htmlDump) {
+                console.log('DOM: ' + html);
             }
-            else
-            {
+            if (err) {
+                throw({message: 'ERROR Parsing Page: ' + err});
+            }
+            else if (resp.statusCode !== 200) {
+                throw({message: 'ERROR Status Code: ' + resp.statusCode});
+            }
+            else {
                 var $ = cheerio.load(html);
                 if (job.scrape !== undefined) {
                     self.scrape = job.scrape;
@@ -68,7 +75,7 @@ Peruse.prototype.jobComplete = function() {
     }
     this.jobCount--;
     if (this.jobCount <= 0) {
-       
+
         this.done(this._collectedData, this.options);
     }
 };
@@ -123,12 +130,12 @@ Peruse.prototype.scrape = function($, selectors, cb) {
 
                 i++;
             });
-            
+
         });
-        
+
     });
     cb(self._collectedData, self.options);
-    
+
 };
 
 // createURL - should be overridden in child classes
@@ -137,7 +144,7 @@ Peruse.prototype._createURL = function(base, identifier, postfix) {
         console.log('Peruse::_createURL() base: ' + base + ' identifier: ' + identifier + ' postfix: ' + postfix);
     }
     var url = (base || '') + (identifier || '') + (postfix || '');
-    return url;
+    return url.trim();
 };
 
 module.exports = Peruse;

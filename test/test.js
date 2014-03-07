@@ -88,7 +88,7 @@ describe('PeruseJS - with dogvacay data', function() {
                 }
         ]
         }];
-        scraper = new peruse(siteData, {'verbose': true, 'identifier': 'Happy-Home-Away-from-Home-Dog-Boarding-39803'});
+        scraper = new peruse(siteData, {'verbose': true, 'htmlDump': true, 'identifier': 'Happy-Home-Away-from-Home-Dog-Boarding-39803'});
     });
 
     describe('Creating a Peruse Object', function() {
