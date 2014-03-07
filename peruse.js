@@ -50,6 +50,7 @@ Peruse.prototype.process = function(cb) {
         }
         self._request({
             'url': url,
+            'timeout': 3000,
             'headers': {
                 'User-Agent': 'Mozilla/5.0 (Windows NT 6.2; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/32.0.1667.0 Safari/537.36'
             }
