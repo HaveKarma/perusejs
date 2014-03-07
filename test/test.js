@@ -46,7 +46,7 @@ describe('PeruseJS - with airbnb data', function() {
             ],
             'baseUrl': 'https://www.airbnb.com/users/show/'
         }];
-        scraper = new peruse(siteData, {'verbose': true, 'identifier': '492445'});
+        scraper = new peruse(siteData, {'verbose': false, 'identifier': '492445'});
     });
 
     describe('Creating a Peruse Object', function() {
@@ -62,10 +62,22 @@ describe('PeruseJS - with airbnb data', function() {
 
         describe('#process()', function(){
             this.timeout(5000);
+            var data = null;
             it('should run without error in < 5000ms', function(done){
                 scraper.process(function(x) {
                     done();
+                    data = x;
                 });
+            });
+
+            it('should return results', function(done){
+                if (data.length > 0) {
+                    done();
+                }
+                else {
+                    throw({'message': 'Didn\'t find any data!'});
+                }
+
             });
         })
     });
@@ -88,7 +100,7 @@ describe('PeruseJS - with dogvacay data', function() {
                 }
         ]
         }];
-        scraper = new peruse(siteData, {'verbose': true, 'htmlDump': true, 'identifier': 'Happy-Home-Away-from-Home-Dog-Boarding-39803'});
+        scraper = new peruse(siteData, {'verbose': false, 'htmlDump': false, 'identifier': 'Happy-Home-Away-from-Home-Dog-Boarding-39803'});
     });
 
     describe('Creating a Peruse Object', function() {
@@ -104,10 +116,22 @@ describe('PeruseJS - with dogvacay data', function() {
 
         describe('#process()', function(){
             this.timeout(5000);
+            var data = null;
             it('should run without error in < 5000ms', function(done){
                 scraper.process(function(x) {
+                    data = x;
                     done();
                 });
+            });
+
+            it('should return results', function(done){
+                if (data.length > 0) {
+                    done();
+                }
+                else {
+                    throw({'message': 'Didn\'t find any data!'});
+                }
+
             });
         })
     });

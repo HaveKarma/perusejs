@@ -27,6 +27,10 @@ Peruse.prototype._verifyJob = function(job) {
     return true;
 };
 
+Peruse.prototype._request = function(options, callback) {
+    request(options, callback);
+};
+
 // use request and cheerio to get the HTML data
 Peruse.prototype.process = function(cb) {
     this.done = cb;
@@ -44,13 +48,19 @@ Peruse.prototype.process = function(cb) {
         if (self.options.verbose) {
             console.log('Peruse::process() url: |' + url+'|');
         }
-        request({
+        self._request({
             'url': url,
-            'User-Agent': 'request'
+            'headers': {
+                'User-Agent': 'Mozilla/5.0 (Windows NT 6.2; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/32.0.1667.0 Safari/537.36'
+            }
+
         }, function(err, resp, html)
         {
             if (self.options.htmlDump) {
                 console.log('DOM: ' + html);
+            }
+            if (self.options.verbose) {
+                console.log('response: ' + JSON.stringify(resp));
             }
             if (err) {
                 throw({message: 'ERROR Parsing Page: ' + err});
