@@ -35,18 +35,18 @@ describe('PeruseJS - sans arguments', function() {
     });
 });
 
-describe('PeruseJS - with data', function() {
+describe('PeruseJS - with airbnb data', function() {
     before(function() {
         var siteData = [{
-            'selector': 'p.message',
-            'baseUrl': 'https://www.airbnb.com/users/show/',
-            'identifier': '492445'
-        },{
-            'selector': 'p.message',
-            'baseUrl': 'https://www.airbnb.com/users/show/',
-            'identifier': '2308032'
+            'selector': [
+                {
+                    'text': '.panel-body > .comment-container',
+                    'date': '.panel-body > .text-muted.date'
+                }
+            ],
+            'baseUrl': 'https://www.airbnb.com/users/show/'
         }];
-        scraper = new peruse(siteData);
+        scraper = new peruse(siteData, {'verbose': true, 'identifier': '492445'});
     });
 
     describe('Creating a Peruse Object', function() {
@@ -70,7 +70,49 @@ describe('PeruseJS - with data', function() {
         })
     });
 
-    
+
+});
+
+
+describe('PeruseJS - with dogvacay data', function() {
+    before(function() {
+        var siteData = [{
+            'baseUrl': 'http://dogvacay.com/',
+            'selector': [
+                {
+                    'text': '.profilereviewblurb > p',
+                    'date': {
+                        'selector': '.profilereviewblurb > meta[itemprop="datePublished"]',
+                        'type': 'meta'
+                    }
+                }
+        ]
+        }];
+        scraper = new peruse(siteData, {'verbose': true, 'identifier': 'Happy-Home-Away-from-Home-Dog-Boarding-39803'});
+    });
+
+    describe('Creating a Peruse Object', function() {
+        it('should be ok', function(){
+            should(scraper).be.ok;
+        });
+
+        it ('_createURL() - should return string', function() {
+            describe('Do something', function() {
+                scraper._createURL().should.be.type('string');
+            });
+        });
+
+        describe('#process()', function(){
+            this.timeout(5000);
+            it('should run without error in < 5000ms', function(done){
+                scraper.process(function(x) {
+                    done();
+                });
+            });
+        })
+    });
+
+
 });
 
 // var bs = require('./peruse.js');
