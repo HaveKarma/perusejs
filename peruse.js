@@ -65,9 +65,11 @@ Peruse.prototype.process = function(cb) {
             }
             if (err) {
                 throw({message: 'ERROR Parsing Page: ' + err});
+                self.jobComplete();
             }
             else if (resp.statusCode !== 200) {
                 throw({message: 'ERROR Status Code: ' + resp.statusCode});
+                self.jobComplete();
             }
             else {
                 var $ = cheerio.load(html);
