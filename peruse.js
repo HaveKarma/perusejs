@@ -58,6 +58,7 @@ Peruse.prototype.process = function(cb) {
         self._handleRequest(url, function(err, resp, html)
         {
             console.log('finished');
+            // @TODO Figure out why this breaks request
             // if (self.options.htmlDump) {
             //     console.log('DOM: ' + html);
             // }
