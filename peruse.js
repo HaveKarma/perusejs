@@ -19,6 +19,10 @@ var Peruse = function(jobs, options) {
     this.options = options || {};
     this.jobCount = this.jobs.length;
 
+    if (this.options.verbose) {
+        console.log('\nOPTIONS: ' + JSON.stringify(this.options) + '\n');
+    }
+
     this._collectedData = [];
     return this;
 };
@@ -75,7 +79,7 @@ Peruse.prototype.process = function(cb) {
                 if (job.scrape !== undefined) {
                     self.scrape = job.scrape;
                 }
-                self.scrape($, job.selector, self.jobComplete);
+                self.scrape($, job.selector, self.jobComplete, self.options);
             }
         });
     });
@@ -104,7 +108,7 @@ Peruse.prototype._getData = function(result, type, $) {
     }
 
     if (this.options.verbose) {
-        console.log('Peruse::scrape() _getData() ' + data + ' ' + type);
+        console.log('Peruse::scrape() _getData() Data: ' + data + ' Type: ' + type);
     }
 
     return data;

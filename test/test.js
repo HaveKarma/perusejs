@@ -37,7 +37,8 @@ describe('PeruseJS - sans arguments', function() {
 
 describe('PeruseJS - with airbnb data', function() {
     before(function() {
-        var siteData = [{
+        var siteData = [
+        {
             'selector': [
                 {
                     'text': '.panel-body > .comment-container',
@@ -45,7 +46,17 @@ describe('PeruseJS - with airbnb data', function() {
                 }
             ],
             'baseUrl': 'https://www.airbnb.com/users/show/'
-        }];
+        },
+        {
+            'selector': [
+                {
+                    'text': '.panel-body > .comment-container',
+                    'date': '.panel-body > .text-muted.date'
+                }
+            ],
+            'baseUrl': 'https://www.airbnb.com/users/show/'
+        }
+        ];
         scraper = new peruse(siteData, {'verbose': false, 'identifier': '492445'});
     });
 
@@ -135,9 +146,8 @@ describe('PeruseJS - with dogvacay data', function() {
             });
         })
     });
-
-
 });
+
 
 // var bs = require('./peruse.js');
 
