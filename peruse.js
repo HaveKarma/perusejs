@@ -105,6 +105,14 @@ Peruse.prototype._getData = function(result, type, $) {
         case 'meta':
             data = $(result).attr('content');
             break;
+        case 'href':
+            data = $(result).attr('href');
+            break;
+        case 'src':
+            data = $(result).attr('src');
+        default:
+            console.log('Unsupported data type: ' + type + '!');
+            break;
     }
 
     if (this.options.verbose) {
