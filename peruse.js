@@ -68,11 +68,14 @@ Peruse.prototype.process = function(cb) {
             // if (self.options.verbose) {
             //     console.log('response: ' + JSON.stringify(resp));
             // }
+
             if (err) {
-                throw({message: 'ERROR Parsing Page: ' + err});
+                console.error({message: 'ERROR Parsing Page: ' + err, options: self.options});
+                self.done([], self.options);
             }
             else if (resp.statusCode !== 200) {
-                throw({message: 'ERROR Status Code: ' + resp.statusCode});
+                console.error({message: 'ERROR Status Code: ' + resp.statusCode, options: self.options});
+                self.done([], self.options);
             }
             else {
                 var $ = cheerio.load(html);
@@ -110,6 +113,7 @@ Peruse.prototype._getData = function(result, type, $) {
             break;
         case 'src':
             data = $(result).attr('src');
+            break;
         default:
             console.log('Unsupported data type: ' + type + '!');
             break;
