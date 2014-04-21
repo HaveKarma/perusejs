@@ -70,12 +70,10 @@ Peruse.prototype.process = function(cb) {
             // }
 
             if (err) {
-                console.error({message: 'ERROR Parsing Page: ' + err, options: self.options});
-                self.done([], self.options);
+                self.done({message: 'ERROR Parsing Page: ' + err, options: self.options, url: url}, [], self.options);
             }
             else if (resp.statusCode !== 200) {
-                console.error({message: 'ERROR Status Code: ' + resp.statusCode, options: self.options});
-                self.done([], self.options);
+                self.done({message: 'ERROR Status Code: ' + resp.statusCode, options: self.options}, [], self.options);
             }
             else {
                 var $ = cheerio.load(html);
@@ -95,7 +93,7 @@ Peruse.prototype.jobComplete = function() {
     this.jobCount--;
     if (this.jobCount <= 0) {
 
-        this.done(this._collectedData, this.options);
+        this.done(null, this._collectedData, this.options);
     }
 };
 
