@@ -75,9 +75,9 @@ describe('PeruseJS - with airbnb data', function() {
             this.timeout(5000);
             var data = null;
             it('should run without error in < 5000ms', function(done){
-                scraper.process(function(x) {
+                scraper.process(function(err, _data) {
                     done();
-                    data = x;
+                    data = _data;
                 });
             });
 
@@ -129,8 +129,8 @@ describe('PeruseJS - with dogvacay data', function() {
             this.timeout(5000);
             var data = null;
             it('should run without error in < 5000ms', function(done){
-                scraper.process(function(x) {
-                    data = x;
+                scraper.process(function(err, _data) {
+                    data = _data;
                     done();
                 });
             });
