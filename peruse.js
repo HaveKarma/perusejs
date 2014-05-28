@@ -130,7 +130,6 @@ Peruse.prototype._getData = function(result, options, $) {
 // this function does the scraping, saving the data locally.
 Peruse.prototype.scrape = function($, selectors, cb) {
     var self = this;
-    var type = '';
     var options = {};
     var i = 0;
     if (this.options.verbose) {
@@ -141,8 +140,8 @@ Peruse.prototype.scrape = function($, selectors, cb) {
             options.type = 'html';
             if (typeof value === 'object') {
                 options.type = value.type;
-                options.value = value.selector;
                 options.attr = value.attr;
+                value = value.selector;
             }
             i = 0;
             if (self.options.verbose) {
