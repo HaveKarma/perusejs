@@ -97,9 +97,9 @@ Peruse.prototype.jobComplete = function() {
     }
 };
 
-Peruse.prototype._getData = function(result, type, $) {
+Peruse.prototype._getData = function(result, options, $) {
     var data = '';
-    switch(type) {
+    switch(options.type) {
         case 'html':
             data = $(result).text().trim();
             break;
@@ -112,13 +112,16 @@ Peruse.prototype._getData = function(result, type, $) {
         case 'src':
             data = $(result).attr('src');
             break;
+        case 'attr':
+            data = $(result).attr(options.attr);
+            break;
         default:
-            console.log('Unsupported data type: ' + type + '!');
+            console.log('Unsupported data type: ' + options.type + '!');
             break;
     }
 
     if (this.options.verbose) {
-        console.log('Peruse::scrape() _getData() Data: ' + data + ' Type: ' + type);
+        console.log('Peruse::scrape() _getData() Data: ' + data + ' Type: ' + options.type);
     }
 
     return data;
@@ -128,16 +131,18 @@ Peruse.prototype._getData = function(result, type, $) {
 Peruse.prototype.scrape = function($, selectors, cb) {
     var self = this;
     var type = '';
+    var options = {};
     var i = 0;
     if (this.options.verbose) {
         console.log('Peruse::scrape() scraping ' + selectors.length + ' selectors.');
     }
     _.each(selectors, function(sel) {
         _.each(sel, function(value, key){
-            type = 'html';
+            options.type = 'html';
             if (typeof value === 'object') {
-                type = value.type;
-                value = value.selector;
+                options.type = value.type;
+                options.value = value.selector;
+                options.attr = value.attr;
             }
             i = 0;
             if (self.options.verbose) {
@@ -146,12 +151,12 @@ Peruse.prototype.scrape = function($, selectors, cb) {
             _.each($(value), function(result){
                 if (self._collectedData[i] === undefined) {
                     var newData = {};
-                    newData[key] = self._getData(result, type, $);
+                    newData[key] = self._getData(result, options, $);
                     self._collectedData.push(newData);
                 }
                 else {
                     // we've already scraped a selector for this job...
-                    self._collectedData[i][key] =  self._getData(result, type, $);
+                    self._collectedData[i][key] =  self._getData(result, options, $);
                 }
 
                 i++;
