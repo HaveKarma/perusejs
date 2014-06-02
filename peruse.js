@@ -133,7 +133,7 @@ Peruse.prototype.scrape = function($, selectors, cb) {
     var options = {};
     var i = 0;
     if (this.options.verbose) {
-        console.log('Peruse::scrape() scraping ' + selectors.length + ' selectors.');
+        console.log('Peruse::scrape() scraping '.red + selectors.length + ' selectors.' + JSON.stringify(selectors));
     }
     _.each(selectors, function(sel) {
         _.each(sel, function(value, key){
@@ -145,7 +145,7 @@ Peruse.prototype.scrape = function($, selectors, cb) {
             }
             i = 0;
             if (self.options.verbose) {
-                console.log('Peruse::scrape() Scraping Selector: ' + value + ' length: ' + $(value).length);
+                console.log('Peruse::scrape() Scraping Selector: '.cyan + value + ' length: ' + $(value).length);
             }
             _.each($(value), function(result){
                 if (self._collectedData[i] === undefined) {
