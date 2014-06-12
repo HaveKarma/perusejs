@@ -11,6 +11,7 @@ var _ = require('underscore');
 // Create the initial Peruse Object
 var Peruse = function(jobs, options) {
     _.bindAll(this, 'jobComplete');
+    this._collectedData = [];
     // make sure the object passed is in array
     if (jobs !== undefined && jobs.length === undefined) {
         jobs = [jobs];
@@ -22,8 +23,6 @@ var Peruse = function(jobs, options) {
     if (this.options.verbose) {
         console.log('\nOPTIONS: ' + JSON.stringify(this.options) + '\n');
     }
-
-    this._collectedData = [];
     return this;
 };
 
