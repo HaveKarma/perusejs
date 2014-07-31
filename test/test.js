@@ -41,8 +41,8 @@ describe('PeruseJS - with airbnb data', function() {
         {
             'selector': [
                 {
-                    'text': '.panel-body > .comment-container',
-                    'date': '.panel-body > .text-muted.date'
+                    'text': '.comment-container > p',
+                    'date': '.date'
                 }
             ],
             'baseUrl': 'https://www.airbnb.com/users/show/'
@@ -50,8 +50,8 @@ describe('PeruseJS - with airbnb data', function() {
         {
             'selector': [
                 {
-                    'text': '.panel-body > .comment-container',
-                    'date': '.panel-body > .text-muted.date'
+                    'text': '.comment-container > p',
+                    'date': '.date'
                 }
             ],
             'baseUrl': 'https://www.airbnb.com/users/show/'
