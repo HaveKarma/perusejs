@@ -96,22 +96,71 @@ describe('PeruseJS - with airbnb data', function() {
 
 });
 
-
 describe('PeruseJS - with dogvacay data', function() {
     before(function() {
         var siteData = [{
             'baseUrl': 'http://dogvacay.com/',
             'selector': [
                 {
-                    'text': '.profilereviewblurb > p',
-                    'date': {
-                        'selector': '.profilereviewblurb > meta[itemprop="datePublished"]',
-                        'type': 'meta'
+                    'text': '.review-cont > .oh > p',
+                        "date": {
+                        "selector": ".review-cont > .oh > meta[itemprop='datePublished']",
+                        "type": "meta"
                     }
                 }
         ]
         }];
         scraper = new peruse(siteData, {'verbose': false, 'htmlDump': false, 'identifier': 'Happy-Home-Away-from-Home-Dog-Boarding-39803'});
+    });
+
+    describe('Creating a Peruse Object', function() {
+        it('should be ok', function(){
+            should(scraper).be.ok;
+        });
+
+        it ('_createURL() - should return string', function() {
+            describe('Do something', function() {
+                scraper._createURL().should.be.type('string');
+            });
+        });
+
+        describe('#process()', function(){
+            this.timeout(5000);
+            var data = null;
+            it('should run without error in < 5000ms', function(done){
+                scraper.process(function(err, _data) {
+                    data = _data;
+                    done();
+                });
+            });
+
+            it('should return results', function(done){
+                if (data.length > 0) {
+                    done();
+                }
+                else {
+                    throw({'message': 'Didn\'t find any data!'});
+                }
+
+            });
+        })
+    });
+});
+
+
+
+describe('PeruseJS - with Relay Rides data', function() {
+    before(function() {
+        var siteData = [{
+            'baseUrl': 'https://www.relayrides.com/drivers/',
+            'selector': [
+                {
+                    'text': '.review-list-item .content div:even',
+                    'date': '.review-list-item .content .attribution span'
+                }
+        ]
+        }];
+        scraper = new peruse(siteData, {'verbose': false, 'htmlDump': false, 'identifier': '18487'});
     });
 
     describe('Creating a Peruse Object', function() {

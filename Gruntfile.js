@@ -17,13 +17,13 @@ module.exports = function (grunt) {
                 'jshintrc': true,
                 'ignores': 'test/*'
             }
-        
+
         },
 
         mochaTest: {
             peruse: {
                 options: {
-                    reporter: 'spec'
+                    reporter: 'spec',
                 },
                 src: [
                     'test/**/*.js'
@@ -35,5 +35,5 @@ module.exports = function (grunt) {
 
     grunt.registerTask('default', ['jshint', 'mochaTest']);
     grunt.registerTask('test', ['jshint', 'mochaTest']);
-    
+
 };

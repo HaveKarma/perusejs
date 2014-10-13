@@ -136,28 +136,39 @@ Peruse.prototype.scrape = function($, selectors, cb) {
     }
     _.each(selectors, function(sel) {
         _.each(sel, function(value, key){
+            var even = false;
+            var evenTracker = 0;
             options.type = 'html';
+
             if (typeof value === 'object') {
                 options.type = value.type;
                 options.attr = value.attr;
                 value = value.selector;
             }
+            if (value.indexOf(':even') > -1) {
+                even = true;
+                value = value.replace(':even','');
+            }
             i = 0;
             if (self.options.verbose) {
                 console.log('Peruse::scrape() Scraping Selector: '.cyan + value + ' length: ' + $(value).length);
             }
-            _.each($(value), function(result){
-                if (self._collectedData[i] === undefined) {
-                    var newData = {};
-                    newData[key] = self._getData(result, options, $);
-                    self._collectedData.push(newData);
-                }
-                else {
-                    // we've already scraped a selector for this job...
-                    self._collectedData[i][key] =  self._getData(result, options, $);
-                }
 
-                i++;
+            _.each($(value), function(result){
+                if (((even) && (evenTracker % 2 === 0)) || !even) {
+                    if (self._collectedData[i] === undefined) {
+                        var newData = {};
+                        newData[key] = self._getData(result, options, $);
+                        self._collectedData.push(newData);
+                    }
+                    else {
+                        // we've already scraped a selector for this job...
+                        self._collectedData[i][key] =  self._getData(result, options, $);
+                    }
+                    i++;
+                }
+                evenTracker++;
+
             });
 
         });
@@ -172,6 +183,7 @@ Peruse.prototype._createURL = function(base, identifier, postfix) {
     if (this.options.verbose) {
         console.log('Peruse::_createURL() base: ' + base + ' identifier: ' + identifier + ' postfix: ' + postfix);
     }
+
     var url = (base || '') + (identifier || '') + (postfix || '');
     return url.trim();
 };
