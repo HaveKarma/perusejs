@@ -130,12 +130,15 @@ Peruse.prototype._getData = function(result, options, $) {
 Peruse.prototype.scrape = function($, selectors, cb) {
     var self = this;
     var options = {};
-    var i = 0;
+
+
     if (this.options.verbose) {
         console.log('Peruse::scrape() scraping '.red + selectors.length + ' selectors.' + JSON.stringify(selectors));
     }
     _.each(selectors, function(sel) {
+        var i = self._collectedData.length;
         _.each(sel, function(value, key){
+            var j = i;
             var even = false;
             var evenTracker = 0;
             options.type = 'html';
@@ -149,23 +152,23 @@ Peruse.prototype.scrape = function($, selectors, cb) {
                 even = true;
                 value = value.replace(':even','');
             }
-            i = 0;
+
             if (self.options.verbose) {
                 console.log('Peruse::scrape() Scraping Selector: '.cyan + value + ' length: ' + $(value).length);
             }
 
             _.each($(value), function(result){
                 if (((even) && (evenTracker % 2 === 0)) || !even) {
-                    if (self._collectedData[i] === undefined) {
+                    if (self._collectedData[j] === undefined) {
                         var newData = {};
                         newData[key] = self._getData(result, options, $);
                         self._collectedData.push(newData);
                     }
                     else {
                         // we've already scraped a selector for this job...
-                        self._collectedData[i][key] =  self._getData(result, options, $);
+                        self._collectedData[j][key] =  self._getData(result, options, $);
                     }
-                    i++;
+                    j++;
                 }
                 evenTracker++;
 
@@ -174,9 +177,11 @@ Peruse.prototype.scrape = function($, selectors, cb) {
         });
 
     });
+
     cb(self._collectedData, self.options);
 
 };
+
 
 // createURL - should be overridden in child classes
 Peruse.prototype._createURL = function(base, identifier, postfix) {
