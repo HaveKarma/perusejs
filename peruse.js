@@ -9,7 +9,7 @@ var cheerio = require('cheerio');
 var _ = require('underscore');
 
 // Create the initial Peruse Object
-var Peruse = function(jobs, options) {
+var Peruse = function (jobs, options) {
     _.bindAll(this, 'jobComplete');
     this._collectedData = [];
     // make sure the object passed is in array
@@ -26,11 +26,11 @@ var Peruse = function(jobs, options) {
     return this;
 };
 
-Peruse.prototype._verifyJob = function(/*job*/) {
+Peruse.prototype._verifyJob = function ( /*job*/ ) {
     return true;
 };
 
-Peruse.prototype._handleRequest = function(url, callback) {
+Peruse.prototype._handleRequest = function (url, callback) {
     request({
         'url': url,
         'timeout': 3000,
@@ -42,10 +42,10 @@ Peruse.prototype._handleRequest = function(url, callback) {
 };
 
 // use request and cheerio to get the HTML data
-Peruse.prototype.process = function(cb) {
+Peruse.prototype.process = function (cb) {
     this.done = cb;
     var self = this;
-    _.each(this.jobs, function(job){
+    _.each(this.jobs, function (job) {
         if (!self._verifyJob(job)) {
             console.error('job not formatted properly');
             return;
@@ -56,10 +56,9 @@ Peruse.prototype.process = function(cb) {
             return;
         }
         if (self.options.verbose) {
-            console.log('Peruse::process() url: |' + url+'|');
+            console.log('Peruse::process() url: |' + url + '|');
         }
-        self._handleRequest(url, function(err, resp, html)
-        {
+        self._handleRequest(url, function (err, resp, html) {
             // @TODO Figure out why this breaks request
             // if (self.options.htmlDump) {
             //     console.log('DOM: ' + html);
@@ -69,10 +68,17 @@ Peruse.prototype.process = function(cb) {
             // }
 
             if (err) {
-                self.done({message: 'ERROR Parsing Page: ' + err, options: self.options, url: url}, [], self.options);
+                self.done({
+                    message: 'ERROR Parsing Page: ' + err,
+                    options: self.options,
+                    url: url
+                }, [], self.options);
             }
             else if (resp.statusCode !== 200) {
-                self.done({message: 'ERROR Status Code: ' + resp.statusCode, options: self.options}, [], self.options);
+                self.done({
+                    message: 'ERROR Status Code: ' + resp.statusCode,
+                    options: self.options
+                }, [], self.options);
             }
             else {
                 var $ = cheerio.load(html);
@@ -85,7 +91,7 @@ Peruse.prototype.process = function(cb) {
     });
 };
 
-Peruse.prototype.jobComplete = function() {
+Peruse.prototype.jobComplete = function () {
     if (this.options.verbose) {
         console.log('Peruse::jobComplete() ' + this.jobCount + ' ' + this._collectedData.length);
     }
@@ -96,38 +102,51 @@ Peruse.prototype.jobComplete = function() {
     }
 };
 
-Peruse.prototype._getData = function(result, options, $) {
+Peruse.prototype._getData = function (result, options, $) {
     var data = '';
-    switch(options.type) {
-        case 'html':
-            data = $(result).text().trim();
-            break;
-        case 'meta':
-            data = $(result).attr('content');
-            break;
-        case 'href':
-            data = $(result).attr('href');
-            break;
-        case 'src':
-            data = $(result).attr('src');
-            break;
-        case 'attr':
-            data = $(result).attr(options.attr);
-            break;
-        default:
-            console.log('Unsupported data type: ' + options.type + '!');
-            break;
+    switch (options.type) {
+    case 'html':
+        data = $(result).text().trim();
+        break;
+    case 'meta':
+        data = $(result).attr('content');
+        break;
+    case 'href':
+        data = $(result).attr('href');
+        break;
+    case 'src':
+        data = $(result).attr('src');
+        break;
+    case 'attr':
+        data = $(result).attr(options.attr);
+        break;
+    default:
+        console.log('Unsupported data type: ' + options.type + '!');
+        break;
     }
 
     if (this.options.verbose) {
         console.log('Peruse::scrape() _getData() Data: ' + data + ' Type: ' + options.type);
     }
 
-    return data;
+    function removeTags(html) {
+        var tagBody = '(?:[^"\'>]|"[^"]*"|\'[^\']*\')*';
+
+        var tagOrComment = new RegExp(
+            '<(?:' + '!--(?:(?:-*[^->])*--+|-?)' + '|script\\b' + tagBody + '>[\\s\\S]*?</script\\s*' + '|style\\b' + tagBody + '>[\\s\\S]*?</style\\s*' + '|/?[a-z]' + tagBody + ')>',
+            'gi');
+        var oldHtml;
+        do {
+            oldHtml = html;
+            html = html.replace(tagOrComment, '');
+        } while (html !== oldHtml);
+        return html.replace(/</g, '&lt;');
+    }
+    return removeTags(data);
 };
 
 // this function does the scraping, saving the data locally.
-Peruse.prototype.scrape = function($, selectors, cb) {
+Peruse.prototype.scrape = function ($, selectors, cb) {
     var self = this;
     var options = {};
 
@@ -135,9 +154,9 @@ Peruse.prototype.scrape = function($, selectors, cb) {
     if (this.options.verbose) {
         console.log('Peruse::scrape() scraping '.red + selectors.length + ' selectors.' + JSON.stringify(selectors));
     }
-    _.each(selectors, function(sel) {
+    _.each(selectors, function (sel) {
         var i = self._collectedData.length;
-        _.each(sel, function(value, key){
+        _.each(sel, function (value, key) {
             var j = i;
             var even = false;
             var evenTracker = 0;
@@ -150,14 +169,14 @@ Peruse.prototype.scrape = function($, selectors, cb) {
             }
             if (value.indexOf(':even') > -1) {
                 even = true;
-                value = value.replace(':even','');
+                value = value.replace(':even', '');
             }
 
             if (self.options.verbose) {
                 console.log('Peruse::scrape() Scraping Selector: '.cyan + value + ' length: ' + $(value).length);
             }
 
-            _.each($(value), function(result){
+            _.each($(value), function (result) {
                 if (((even) && (evenTracker % 2 === 0)) || !even) {
                     if (self._collectedData[j] === undefined) {
                         var newData = {};
@@ -166,7 +185,7 @@ Peruse.prototype.scrape = function($, selectors, cb) {
                     }
                     else {
                         // we've already scraped a selector for this job...
-                        self._collectedData[j][key] =  self._getData(result, options, $);
+                        self._collectedData[j][key] = self._getData(result, options, $);
                     }
                     j++;
                 }
@@ -184,7 +203,7 @@ Peruse.prototype.scrape = function($, selectors, cb) {
 
 
 // createURL - should be overridden in child classes
-Peruse.prototype._createURL = function(base, identifier, postfix) {
+Peruse.prototype._createURL = function (base, identifier, postfix) {
     if (this.options.verbose) {
         console.log('Peruse::_createURL() base: ' + base + ' identifier: ' + identifier + ' postfix: ' + postfix);
     }
