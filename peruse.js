@@ -130,6 +130,9 @@ Peruse.prototype._getData = function (result, options, $) {
     }
 
     function removeTags(html) {
+        if (!html) {
+            return html;
+        }
         var tagBody = '(?:[^"\'>]|"[^"]*"|\'[^\']*\')*';
 
         var tagOrComment = new RegExp(
