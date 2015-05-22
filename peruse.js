@@ -162,6 +162,7 @@ Peruse.prototype.scrape = function ($, selectors, cb) {
         _.each(sel, function (value, key) {
             var j = i;
             var even = false;
+            var first = true;
             var evenTracker = 0;
             options.type = 'html';
 
@@ -174,12 +175,26 @@ Peruse.prototype.scrape = function ($, selectors, cb) {
                 even = true;
                 value = value.replace(':even', '');
             }
+            if (value.indexOf(':first') > -1) {
+                first = true;
+                value = value.replace(':first', '');
+                console.log('now first');
+            }
+
+            var call;
+            if (first) {
+                call = $(value).first();
+            } else {
+                call = $(value);
+            }
+
 
             if (self.options.verbose) {
                 console.log('Peruse::scrape() Scraping Selector: '.cyan + value + ' length: ' + $(value).length);
             }
 
-            _.each($(value), function (result) {
+
+            _.each(call, function (result) {
                 if (((even) && (evenTracker % 2 === 0)) || !even) {
                     if (self._collectedData[j] === undefined) {
                         var newData = {};
