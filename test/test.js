@@ -4,6 +4,7 @@ var assert = require('assert');
 var should = require('should');
 var peruse = require('../peruse.js');
 var scraper = undefined;
+require('colors');
 
 describe('PeruseJS - sans arguments', function() {
     before(function() {
@@ -37,27 +38,18 @@ describe('PeruseJS - sans arguments', function() {
 
 describe('PeruseJS - with airbnb data', function() {
     before(function() {
-        var siteData = [
+        var siteData = {
+            "baseUrl": "https://www.airbnb.com/users/show/",
+            "selector": [{
+                "text": ".as_host .comment-container p",
+                "date": ".as_host .date.hide-sm"
+            },
         {
-            'selector': [
-                {
-                    'text': '.comment-container > p',
-                    'date': '.date'
-                }
-            ],
-            'baseUrl': 'https://www.airbnb.com/users/show/'
-        },
-        {
-            'selector': [
-                {
-                    'text': '.comment-container > p',
-                    'date': '.date'
-                }
-            ],
-            'baseUrl': 'https://www.airbnb.com/users/show/'
-        }
-        ];
-        scraper = new peruse(siteData, {'verbose': false, 'identifier': '492445'});
+            "text": ".as_guest .comment-container p",
+            "date": ".as_guest .date.hide-sm"
+        }]
+        };
+        scraper = new peruse(siteData, {'verbose': true, 'identifier': '2955848'}); //492445
     });
 
     describe('Creating a Peruse Object', function() {
@@ -83,19 +75,22 @@ describe('PeruseJS - with airbnb data', function() {
 
             it('should return results', function(done){
                 if (data.length > 0) {
+                    console.log(JSON.stringify(data, null, 4));
                     done();
                 }
                 else {
-                    throw({'message': 'Didn\'t find any data!'});
+                    throw({'message': 'Didn\'t find any data!' + JSON.stringify(data,null,4)});
                 }
 
             });
+
         })
     });
 
 
 });
 
+/*
 describe('PeruseJS - with dogvacay data', function() {
     before(function() {
         var siteData = [{
@@ -196,7 +191,7 @@ describe('PeruseJS - with Relay Rides data', function() {
         })
     });
 });
-
+*/
 
 // var bs = require('./peruse.js');
 

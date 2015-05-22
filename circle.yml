@@ -1,0 +1,9 @@
+machine:
+  timezone:
+    America/Los_Angeles
+  node:
+    version: 0.10.36
+
+test:
+  pre:
+    - npm install -g grunt-cli

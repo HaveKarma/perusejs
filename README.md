@@ -1,6 +1,6 @@
 perusejs
 ========
-[![Build Status](https://magnum.travis-ci.com/HaveKarma/perusejs.png?token=1c5YtdSbLG13vkiiah9g&branch=master)](https://magnum.travis-ci.com/HaveKarma/perusejs)
+[![Circle CI](https://circleci.com/gh/HaveKarma/perusejs.svg?style=svg)](https://circleci.com/gh/HaveKarma/perusejs)
 
 ```
 var peruse = require('./peruse');
