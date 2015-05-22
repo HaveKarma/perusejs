@@ -141,6 +141,8 @@ Peruse.prototype.scrape = function($, selectors, cb) {
             var j = i;
             var even = false;
             var evenTracker = 0;
+            var first = false;
+
             options.type = 'html';
 
             if (typeof value === 'object') {
@@ -152,9 +154,21 @@ Peruse.prototype.scrape = function($, selectors, cb) {
                 even = true;
                 value = value.replace(':even','');
             }
+            if (value.indexOf(':first') > -1) {
+                first = true;
+                value = value.replace(':first', '');
+                console.log('now first');
+            }
 
             if (self.options.verbose) {
                 console.log('Peruse::scrape() Scraping Selector: '.cyan + value + ' length: ' + $(value).length);
+            }
+
+            var call;
+            if (first) {
+                call = $(value).first();
+            } else {
+                call = $(value);
             }
 
             _.each($(value), function(result){
