@@ -162,7 +162,7 @@ Peruse.prototype.scrape = function ($, selectors, cb) {
         _.each(sel, function (value, key) {
             var j = i;
             var even = false;
-            var first = true;
+            var first = false;
             var evenTracker = 0;
             options.type = 'html';
 

@@ -1,6 +1,6 @@
 {
   "name": "perusejs",
-  "version": "0.5.6",
+  "version": "0.5.7",
   "description": "karma scraper",
   "main": "index.js",
   "scripts": {
