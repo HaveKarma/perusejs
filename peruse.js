@@ -26,6 +26,22 @@ var Peruse = function (jobs, options) {
     return this;
 };
 
+/*
+* Returns true if the current counter is the right ordinality (odd if we are looking for odd, even if we are looking for even)
+*/
+Peruse.prototype._trackerHelper = function (currentCounter, valueToTrack) {
+    var retVal;
+    switch (valueToTrack) {
+        case 1 :
+            retVal = ((currentCounter % 2) !== 0);
+            break;
+        case 2 :
+            retVal = ((currentCounter % 2) === 0);
+            break;
+        }
+    return retVal;
+};
+
 Peruse.prototype._verifyJob = function ( /*job*/ ) {
     return true;
 };
@@ -81,6 +97,13 @@ Peruse.prototype.process = function (cb) {
                 }, [], self.options);
             }
             else {
+                if (job.conversion) { //if we need to process the html before feeding it to parse
+                    switch (job.conversion.type) {
+                    case 'JSON':
+                        html = (JSON.parse(html))[job.conversion.property];
+                        break;
+                    }
+                }
                 var $ = cheerio.load(html);
                 if (job.scrape !== undefined) {
                     self.scrape = job.scrape;
@@ -153,7 +176,6 @@ Peruse.prototype.scrape = function ($, selectors, cb) {
     var self = this;
     var options = {};
 
-
     if (this.options.verbose) {
         console.log('Peruse::scrape() scraping '.red + selectors.length + ' selectors.' + JSON.stringify(selectors));
     }
@@ -161,9 +183,9 @@ Peruse.prototype.scrape = function ($, selectors, cb) {
         var i = self._collectedData.length;
         _.each(sel, function (value, key) {
             var j = i;
-            var even = false;
             var first = false;
-            var evenTracker = 0;
+            var evenOddCounter = 0; //used to determine if we are on an even or odd count
+            var evenOddTracker = 0; //0 for neither, 1 for odd, 2 for even
             options.type = 'html';
 
             if (typeof value === 'object') {
@@ -172,13 +194,16 @@ Peruse.prototype.scrape = function ($, selectors, cb) {
                 value = value.selector;
             }
             if (value.indexOf(':even') > -1) {
-                even = true;
+                evenOddTracker = 2;
                 value = value.replace(':even', '');
+            }
+            if (value.indexOf(':odd') > -1) {
+                evenOddTracker = 1;
+                value = value.replace(':odd', '');
             }
             if (value.indexOf(':first') > -1) {
                 first = true;
                 value = value.replace(':first', '');
-                console.log('now first');
             }
 
             var call;
@@ -193,9 +218,9 @@ Peruse.prototype.scrape = function ($, selectors, cb) {
                 console.log('Peruse::scrape() Scraping Selector: '.cyan + value + ' length: ' + $(value).length);
             }
 
-
             _.each(call, function (result) {
-                if (((even) && (evenTracker % 2 === 0)) || !even) {
+                //if i care about even / odd, and the counter says I am on the right ordinality, or if I don't care about even / odd
+                if (((evenOddTracker > 0) && (self._trackerHelper(evenOddCounter, evenOddTracker))) || (evenOddTracker === 0)) { //sorry, Justin.
                     if (self._collectedData[j] === undefined) {
                         var newData = {};
                         newData[key] = self._getData(result, options, $);
@@ -207,7 +232,7 @@ Peruse.prototype.scrape = function ($, selectors, cb) {
                     }
                     j++;
                 }
-                evenTracker++;
+                evenOddCounter++;
 
             });
 
