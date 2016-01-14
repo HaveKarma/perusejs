@@ -7,6 +7,7 @@
 var request = require('request');
 var cheerio = require('cheerio');
 var _ = require('underscore');
+require('colors');
 
 // Create the initial Peruse Object
 var Peruse = function (jobs, options) {
@@ -51,7 +52,7 @@ Peruse.prototype._handleRequest = function (url, callback) {
         'url': url,
         'timeout': 3000,
         'headers': {
-            'User-Agent': 'request'
+            'User-Agent': 'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/47.0.2526.106 Safari/537.36'
         }
 
     }, callback);
